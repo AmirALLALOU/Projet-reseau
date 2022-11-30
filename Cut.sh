@@ -1,39 +1,61 @@
-# /bin/bash
+#! /bin/bash 
 
-echo test
+affichage="Welcome Amir \nAffichage des fichiers dans le repertoire courant :\n"
+for i in $affichage
+do
+echo -e -n $i" "
+#sleep 0.4
+done
+echo 
+#fichier de lecture de trame
+echo $(ls)
+sleep 1
+echo -e "\nEntrez le nom du fichier contenant les trames :"
+read nom
+while [ ! -f $nom ]
+do
+echo  -e Fichier non trouvé\tvérifiez votre saisie
+echo
+echo voici le chemin du script :
+pwd
+read nom
+done
 
-file="Trame.txt"
+echo -e '\tFichier trouvé'
+file=$nom
+temporaire="temporaire.txt"
 nblignes=0
+exec="py3.py"
+final="res.txt"
 
-#on affiche les numéros des lignes contenant les offsets "0000"
-lignes=$(awk '/0000/{print FNR " " }' $file)
+#on stocke les numéros des lignes contenant les débuts de trame
+lignes=$(awk '/0000/{print FNR " " }'  $file)
 for x in $lignes
-do 
-echo $x 
+do
 nblignes=$((nblignes+1))
 done
-echo $nblignes 
+echo -e "\t$nblignes trames détectées"
+sleep 1
 
-#intialisation des variables
+#initialisation des variables 
 b=0
 cpt=0
 
+[ $nblignes -eq 1 ]  && $file > $destination && python3 $exec $file >final.txt && exit 0
 
-#Une liste des lignes de début de trame se trouve dans $ligne  
-
-
-for i in $lignes 
+#Une liste des lignes de début de trame se trouve dans $ligne
+echo -e Fichier de découpage de $nblignes trames >$final
+echo -e "\n\tdébut de traitement"
+sleep 1
+for i in $lignes
 do
-cpt=$((cpt+1))
+cpt=$((cpt+1)) 
 [ $i -eq 1 ] && continue
-head -n $((i-1)) "$file"|tail -n +$b > Spathis$cpt.txt 
-b=$i
-[ $cpt -eq  $nblignes  ] && tail -n +$i "$file" > Spathis$io.txt
-#execute py3.py sur le fichier et le stocke dans un fichier txt
-python3 py3.py Spathis$cpt.txt > Resultat$cpt.txt
+echo -e "\nTrame $((cpt-1)) :\n" >> $final
+head -n $((i-1)) $file |tail -n +$b > $temporaire  &&  b=$i && python3 $exec $temporaire >> $final
+[ $cpt -eq $nblignes ] && tail -n +$i $file > $temporaire  && echo -e "\nTrame $cpt :\n" >>$final && python3 $exec $temporaire >> $final
 done
+#rm $temporaire
 
-
-
-
-
+echo -e "\tfin du traitement"
+echo Le fichier résultat se trouve dans $final

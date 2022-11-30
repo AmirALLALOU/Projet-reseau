@@ -27,8 +27,9 @@ def start(file):
             #print(offset)
             #print(ltrame)
         #print(Trame)
-        ethernet(Trame)
-        http(Trame)
+        #ethernet(Trame)
+        #http(Trame)
+        #flowgraph(Trame)
         #ferme le fichier
         file.close()
         return Trame
@@ -152,12 +153,58 @@ def http(Trame):
     for i in range (4,len(Trame)):
         for j in range (0,len(Trame[i])):
             print(chr(convert(Trame[i][j])),end='')
+
+def ipsource(Trame):
+    ipsrc = str(convert(Trame[1][10])) + "." + str(convert(Trame[1][11])) + "." + str(convert(Trame[1][12])) + "." + str(convert(Trame[1][13]))
+    return ipsrc
+
+def ipdestination(Trame):
+    ipdst = str(convert(Trame[1][14])) + "." + str(convert(Trame[1][15])) + "." + str(convert(Trame[2][0])) + "." + str(convert(Trame[2][1]))
+    return ipdst
+
+def tcpdstport(Trame):
+    tcpsrc = convert(Trame[2][4] + Trame[2][5])
+    return tcpsrc
+
+def tcpsrcport(Trame):
+    tcpdst = convert(Trame[2][2] + Trame[2][3])
+    return tcpdst
+
+def tcpflags(Trame):
+    #return the different flags if they are set
+    flags = convert(Trame[2][14][1]+Trame[2][15])
+    flags = bin(flags)[2:].zfill(12)
+    if (flags[6] == '1'):
+        res = "Urgent =" + " " + flags[6]
+    if (flags[7] == '1'):
+        res = "Acknowledgement =" + " " + flags[7]
+    if (flags[8] == '1'):
+        res = "Push =" + " " + flags[8]
+    if (flags[9] == '1'):
+        res = "Reset =" + " " + flags[9]
+    if (flags[10] == '1'):
+        res = "Syn =" + " " + flags[10]
+    if (flags[11] == '1'):
+        res = "Fin =" + " " + flags[11]
+    return res
+
+
+def tcpseq(Trame):
+    tcpseq = convert(Trame[2][6] + Trame[2][7] + Trame[2][8] + Trame[2][9])
+    return tcpseq
+
+def tcpWindow(Trame):
+    tcpwindow = convert(Trame[3][0] + Trame[3][1])
+    return tcpwindow
+
+def udpport(Trame):
+    udpsrc = convert(Trame[2][2] + Trame[2][3])
+    return udpsrc
+
+def flowgraph(Trame):
+    #if (ipv4(Trame) == True):
+        #if (tcp(Trame) == True):
+            print("Flowgraph: IP source ",ipsource(Trame),": Port Source ",tcpsrcport(Trame),"---",tcpflags(Trame), "Win =",tcpWindow(Trame),"Len = ---> IP destination",ipdestination(Trame),": Port Destination ",tcpdstport(Trame))
     
-
-start("TRAME.txt")
-
-
-    
-
-
-
+flowgraph(start(sys.argv[1]))
+#start(sys.argv[1])
