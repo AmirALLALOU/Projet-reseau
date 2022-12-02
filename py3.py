@@ -189,6 +189,12 @@ def tcpflags(Trame):
     return res
 
 
+def tcplen(Trame):
+    tcptotallen = convert(Trame[1][0] + Trame[1][1]) - convert(Trame[0][14][1])*4
+    tcplen = tcptotallen - convert(Trame[2][14][0])*4
+    return tcplen
+
+
 def tcpseq(Trame):
     tcpseq = convert(Trame[2][6] + Trame[2][7] + Trame[2][8] + Trame[2][9])
     return tcpseq
@@ -204,7 +210,7 @@ def udpport(Trame):
 def flowgraph(Trame):
     #if (ipv4(Trame) == True):
         #if (tcp(Trame) == True):
-            print("Flowgraph: IP source ",ipsource(Trame),": Port Source ",tcpsrcport(Trame),"---",tcpflags(Trame), "Win =",tcpWindow(Trame),"Len = ---> IP destination",ipdestination(Trame),": Port Destination ",tcpdstport(Trame))
+            print(" IP source ",ipsource(Trame),": Port Source ",tcpsrcport(Trame),"---",tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame), " ---> IP destination",ipdestination(Trame),": Port Destination ",tcpdstport(Trame))
     
 flowgraph(start(sys.argv[1]))
 #start(sys.argv[1])

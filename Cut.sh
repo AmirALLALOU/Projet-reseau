@@ -9,7 +9,7 @@ done
 echo 
 #fichier de lecture de trame
 echo $(ls)
-sleep 1
+
 echo -e "\nEntrez le nom du fichier contenant les trames :"
 read nom
 while [ ! -f $nom ]
@@ -44,7 +44,7 @@ cpt=0
 [ $nblignes -eq 1 ]  && $file > $destination && python3 $exec $file >final.txt && exit 0
 
 #Une liste des lignes de début de trame se trouve dans $ligne
-echo -e Fichier de découpage de $nblignes trames >$final
+echo -e "\tFlowgraph\nFichier de découpage de $nblignes trames\n" >$final
 echo -e "\n\tdébut de traitement"
 sleep 1
 for i in $lignes
