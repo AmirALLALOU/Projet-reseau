@@ -48,10 +48,13 @@ def udp(Trame):
         return False
 
 def http(Trame):
+    #parcourir la trame pour trouver le http
     if (tcpdstport(Trame) == 80 or tcpsrcport(Trame) == 80):
-        return True
-    else:
-        return False
+        for i in range(len(Trame)):
+            for j in range(3,len(Trame[i])):
+                if (Trame[i][j-3] == "48" and Trame[i][j-2] == "54" and Trame[i][j-1] == "54" and Trame[i][j] == "50"):
+                    return True
+    return False
 
 #convertit hexadecimal en decimal 
 def convert(a) :
@@ -91,6 +94,25 @@ def tcpflags(Trame):
         res = "Fin =" + " " + flags[11]
     return res
 
+def tcpflags2(Trame):
+    #return the flags if they are set in a table
+    flags = convert(Trame[2][14][1]+Trame[2][15])
+    flags = bin(flags)[2:].zfill(12)
+    res = []
+    if (flags[6] == '1'):
+        res.append("URG")
+    if (flags[7] == '1'):
+        res.append("ACK")
+    if (flags[8] == '1'):
+        res.append("PSH")
+    if (flags[9] == '1'):
+        res.append("RST")
+    if (flags[10] == '1'):
+        res.append("SYN")
+    if (flags[11] == '1'):
+        res.append("FIN")
+    return res
+
 
 def tcplen(Trame):
     tcptotallen = convert(Trame[1][0] + Trame[1][1]) - convert(Trame[0][14][1])*4
@@ -110,19 +132,35 @@ def udpport(Trame):
     udpsrc = convert(Trame[2][2] + Trame[2][3])
     return udpsrc
 
+def methodhttp(Trame):
+    #retourne la methode les elemetnts de Trame jusqu'a un saut de ligne
+    res = ""
+    i = 3
+    j = 6
+    while (Trame[i][j] != "0d"):
+        if(i==len(Trame)-1):
+            i=0
+        if(j==len(Trame[i])-1):
+            j=0
+            i = i+1
+        res = res + chr(convert(Trame[i][j]))
+        j = j + 1
+    return res
+        
+  
 
 
 def flowgraph(Trame):
     if(ipv4(Trame) and tcp(Trame) and http(Trame)):
         print("Couche la plus haute : HTTP")
-        print(" IP source ",ipsource(Trame),": Port Source ",tcpsrcport(Trame)," -----> IP destination ",ipdestination(Trame),": Port Destination ",tcpdstport(Trame))
+        print("IP source ",ipsource(Trame),": Port Source ",tcpsrcport(Trame)," -----",methodhttp(Trame),"-----> IP destination ",ipdestination(Trame),": Port Destination ",tcpdstport(Trame))
+        print("Commentaire : ",methodhttp(Trame))
     if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
         print("Couche la plus haute : TCP")
-        print(" IP source ",ipsource(Trame),": Port Source ",tcpsrcport(Trame),"---",tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame), " ---> IP destination",ipdestination(Trame),": Port Destination ",tcpdstport(Trame))
-    else:
-        print("IP source", ipsource(Trame), "------> IP destination", ipdestination(Trame))
+        print("IP source ",ipsource(Trame),": Port Source ",tcpsrcport(Trame),"-----",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame), " -----> IP destination",ipdestination(Trame),": Port Destination ",tcpdstport(Trame))
+        print("Commentaire : ",tcpsrcport(Trame), " -> ", tcpdstport(Trame), tcpflags2(Trame),"Seq =",tcpseq(Trame), tcpflags(Trame), "Win =", tcpWindow(Trame), "Len =", tcplen(Trame))
+    if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
+        print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
 
                 
 flowgraph(start(sys.argv[1]))
-#start("http.txt")
-#start(sys.argv[1])
