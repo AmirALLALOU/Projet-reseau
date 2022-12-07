@@ -39,11 +39,43 @@ for i in range(len(liste)):
 #creer une fenetre
 window = tk.Tk()
 window.title("Flow graph")
-window.geometry("1080x720")
+window.geometry("500x500")
+
+#creer une frame
+frame = tk.Frame(window, bg='white')
+
+#creer un canva de len(liste)* 10000 de haut et len(listeIP)*100 de large
+canvas = tk.Canvas(frame, width=len(listeIP)*110, height=len(liste)*110, bg='grey')
+canvas.place(x=100,y=100)
 
 #affiche les elements de la listeIP en haut sur la meme ligne a l'horizontal et trace un trait en dessous de chaque element allant vers le bas
 for i in range(len(listeIP)):
-    tk.Label(window, text=listeIP[i]).grid(row=0, column=i)
+    tk.Label(frame, text=listeIP[i],font = ('Arial',10),bg = 'white').place(x=150+i*110,y=50)
+    for j in range(len(liste)):
+        #tcp source
+        if (liste[j][1] == listeIP[i] ):
+            tk.Label(canvas, text= liste[j][3],font = ('Arial',10),bg = 'grey').place(x=10+i*110,y=50+j*50)
+        #tcp destination
+        if (liste[j][2] == listeIP[i] ):
+            tk.Label(canvas, text= liste[j][4],font = ('Arial',10),bg = 'grey').place(x=100+i*110,y=50+j*50)
+        #trace des fleche horizontale depuis les tcp source vers les tcp destination
+        if (liste[j][1] == listeIP[i] ):
+            canvas.create_line(75+i*110,65+j*50,185+i*110,65+j*50,fill='Black',arrow=tk.LAST,width=2)
+
+
+
+
+
+
+#tracer de trait verticaux partant des label vers le bas
+for i in range(len(listeIP)):
+    canvas.create_line(75+i*110,0,75+i*110,len(liste)*100,fill='white',dash=(4, 4))
+
+
+
+frame.pack(expand=tk.YES, fill=tk.BOTH)
+
+
 
 
 
