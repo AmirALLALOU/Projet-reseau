@@ -150,45 +150,36 @@ def methodhttp(Trame):
         j = j + 1
     return res
         
-  
-def verifyarg():
-    #retourn le nombre darguments
-    return len(sys.argv)
 
 def flowgraph(Trame):
-
-
     res = ""
- 
     #creation du graphe
     if (len(sys.argv)==2):
         if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-            print("Couche la plus haute : HTTP")
             print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
             print("                                             ",methodhttp(Trame))
-            print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+            print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
         if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-            print("Couche la plus haute : TCP")
             print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
             print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-            print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+            print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
         if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
             print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
+
+            
     if (len(sys.argv)==3):
         if (sys.argv[2] == "tcp"):
             if(ipv4(Trame) and tcp(Trame) and http(Trame)):
                 pass
             if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                print("Couche la plus haute : TCP")
                 print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                 print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
         if (sys.argv[2] == "http"):
             if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                print("Couche la plus haute : HTTP")
                 print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                 print("                                             ",methodhttp(Trame))
-                print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
             if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
                 pass
         arg = sys.argv[2].split("==")
@@ -197,15 +188,13 @@ def flowgraph(Trame):
             arg2 = arg[1]
             if(arg2 == ipsource(Trame) or arg2 == ipdestination(Trame)):
                 if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print("Couche la plus haute : HTTP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print("Couche la plus haute : TCP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
                     print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
             else:
@@ -214,15 +203,13 @@ def flowgraph(Trame):
             arg2 = int(arg[1])
             if(arg2 == tcpsrcport(Trame) or arg2 == tcpdstport(Trame)):
                 if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print("Couche la plus haute : HTTP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print("Couche la plus haute : TCP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
                     print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
             else:
@@ -232,15 +219,13 @@ def flowgraph(Trame):
             arg2 = arg[1]
             if(arg2 == ipsource(Trame)):
                 if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print("Couche la plus haute : HTTP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print("Couche la plus haute : TCP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
                     print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
             else:
@@ -249,15 +234,13 @@ def flowgraph(Trame):
             arg2 = arg[1]
             if(arg2 == ipdestination(Trame)):
                 if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print("Couche la plus haute : HTTP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print("Couche la plus haute : TCP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
                     print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
             else:
@@ -266,15 +249,13 @@ def flowgraph(Trame):
             arg2 = int(arg[1])
             if(arg2 == tcpsrcport(Trame)):
                 if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print("Couche la plus haute : HTTP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print("Couche la plus haute : TCP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
                     print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
             else:
@@ -283,15 +264,13 @@ def flowgraph(Trame):
             arg2 = int(arg[1])
             if(arg2 == tcpdstport(Trame)):
                 if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print("Couche la plus haute : HTTP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print("Couche la plus haute : TCP")
                     print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
                     print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame))
+                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
                 if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
                     print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
             else:
