@@ -1,44 +1,74 @@
 #! /bin/bash 
 
-affichage="Welcome Kim Gang et Eliott Malgache des Malgaches  \nAffichage des fichiers dans le repertoire courant :\n"
-for i in $affichage
+printer()
+{
+for i in "$1"
 do
-echo -e -n $i" "
-#sleep 0.2
+for j in $i
+do
+for L in $(seq 1 ${#j});
+do
+echo -n -e "$(echo $j | cut -c$L)"
+# sleep 0.02
+done
+echo -n " "
 done
 echo 
-#fichier de lecture de trame
-echo $(ls)
+done
+}
 
-echo -e "\nEntrez le nom du fichier contenant les trames :"
+echo -e -n "\t\t\t\t\t"
+printer "+-----------------------------------------------+"
+echo -e -n "\t\t\t\t\t"
+printer "|Bienvenue dans le script de traitement de trame|"
+echo -e -n "\t\t\t\t\t"
+printer "+-----------------------------------------------+"
+
+#fichier de lecture de trame
+echo -e "\n"
+printer "Voici les fichiers présents dans le répertoire :"
+echo -e "\n"
+printer "$(ls)"
+echo -e "\n"
+printer "Entrez le nom du fichier contenant les trames :"
+
 read nom
 while [ ! -f $nom ]
 do
-echo  -e Fichier non trouvé\tvérifiez votre saisie
+printer  "Fichier non trouvé    vérifiez votre saisie"
 echo
 echo voici le chemin du script :
 pwd
 read nom
 done
+
+##Fin de l'affichage 
+
+##debut de l'exécution du script
 source Cut.sh 
+printer "Le fichier résultat se trouve dans res.txt"
 
 
-echo -e "Voici le fichier résultat :\n"
+printer "Voici le fichier résultat :"
+echo -e "\n"
+sleep 1
 cat res.txt
-echo -e "Souhaitez vous appliquer un filtre ? yes/no "
+sleep 1
+printer "Souhaitez vous appliquer un filtre ? yes/no "
 read line 
 
 while [[ $line != "yes" ]] && [[ $line != "no" ]]
 do
-echo -e "Veuillez entrer yes ou no"
+printer "Veuillez entrer yes ou no"
 read line 
 done
 
 if [[ $line == "yes" ]] 
 then 
-echo -e "Entrez le filtre que vous voulez appliquer :" 
+printer "Entrez le filtre que vous voulez appliquer :" 
 read filtre
 source Cut.sh $filtre  
-echo -e "Le résultat filtré se trouve dans le fichier res_filtre.txt et celui sans filtre dans res.txt"
+cat res_filtre.txt
+printer "Le résultat filtré se trouve dans le fichier res_filtre.txt et celui sans filtre dans res.txt"
 fi
 [[ $line == "no" ]] && echo -e "Le fichier résultat se trouve dans $final"
