@@ -98,20 +98,20 @@ def tcpflags2(Trame):
     #return the flags if they are set in a table
     flags = convert(Trame[2][14][1]+Trame[2][15])
     flags = bin(flags)[2:].zfill(12)
-    res = []
+    res = "["
     if (flags[6] == '1'):
-        res.append("URG")
+        res =+ "URG "
     if (flags[7] == '1'):
-        res.append("ACK")
+        res = res + "ACK "
     if (flags[8] == '1'):
-        res.append("PSH")
+        res = res +"PSH "
     if (flags[9] == '1'):
-        res.append("RST")
+        res = res + "RST "
     if (flags[10] == '1'):
-        res.append("SYN")
+        res = res + "SYN "
     if (flags[11] == '1'):
-        res.append("FIN")
-    return res
+        res = res + "FIN "
+    return res +"]"
 
 
 def tcplen(Trame):
@@ -156,32 +156,19 @@ def flowgraph(Trame):
     #creation du graphe
     if (len(sys.argv)==2):
         if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-            print(ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",methodhttp(Trame))
-            """print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-            print("                                             ",methodhttp(Trame))
-            print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")"""
+            print("http:",ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",methodhttp(Trame))
         if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-            print(ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",tcpflags(Trame),":",tcpWindow(Trame),":",tcplen(Trame),":",tcpseq(Trame),":",tcpack(Trame))
-            """print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-            print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-            print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")"""
-        if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
-            print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
+            print("tcp:",ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",tcpflags(Trame),":",tcpflags2(Trame),":",tcpWindow(Trame),":",tcplen(Trame),":",tcpseq(Trame),":",tcpack(Trame))
 
-            
     if (len(sys.argv)==3):
         if (sys.argv[2] == "tcp"):
             if(ipv4(Trame) and tcp(Trame) and http(Trame)):
                 pass
             if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
+                print(ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",methodhttp(Trame))
+
         if (sys.argv[2] == "http"):
-            if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                print("                                             ",methodhttp(Trame))
-                print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
+            print(ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",methodhttp(Trame))
             if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
                 pass
         arg = sys.argv[2].split("==")

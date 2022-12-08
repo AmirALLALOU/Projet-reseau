@@ -39,37 +39,79 @@ for i in range(len(liste)):
 #creer une fenetre
 window = tk.Tk()
 window.title("Flow graph")
-window.geometry("500x500")
+window.geometry("1000x1000")
 
 #creer une frame
 frame = tk.Frame(window, bg='white')
 
 #creer un canva de len(liste)* 10000 de haut et len(listeIP)*100 de large
-canvas = tk.Canvas(frame, width=len(listeIP)*110, height=len(liste)*110, bg='grey')
+canvas = tk.Canvas(frame, width=len(listeIP)*20000, height=len(liste)*20000, bg='white',yscrollcommand= True,scrollregion=(0,0,len(listeIP)*110,len(liste)*110))
 canvas.place(x=100,y=100)
+
+#tracer un cadre autour du canva
+
+x = 0
+dico = {}
+
+for i in range(len(listeIP)):
+    dico[listeIP[i]] = 75+i*110
+
+for i in range(len(listeProtocole)):
+    if(listeProtocole[i] == "tcp"):
+        canvas.create_rectangle(0,25+i*50,len(liste)*200,75+i*50,fill='#e4ffc7')
+    if(listeProtocole[i] == "http"):
+        canvas.create_rectangle(0,25+i*50,len(liste)*200,75+i*50,fill='#e7e6ff')
+
 
 #affiche les elements de la listeIP en haut sur la meme ligne a l'horizontal et trace un trait en dessous de chaque element allant vers le bas
 for i in range(len(listeIP)):
-    tk.Label(frame, text=listeIP[i],font = ('Arial',10),bg = 'white').place(x=150+i*110,y=50)
+    canvas.create_text(75+i*110,15, text=listeIP[i],font = ('Arial',10),fill='black')
     for j in range(len(liste)):
         #tcp source
-        if (liste[j][1] == listeIP[i] ):
-            tk.Label(canvas, text= liste[j][3],font = ('Arial',10),bg = 'grey').place(x=10+i*110,y=50+j*50)
-        #tcp destination
-        if (liste[j][2] == listeIP[i] ):
-            tk.Label(canvas, text= liste[j][4],font = ('Arial',10),bg = 'grey').place(x=100+i*110,y=50+j*50)
-        #trace des fleche horizontale depuis les tcp source vers les tcp destination
-        if (liste[j][1] == listeIP[i] ):
-            canvas.create_line(75+i*110,65+j*50,185+i*110,65+j*50,fill='Black',arrow=tk.LAST,width=2)
+        if(dico[liste[j][1]] < dico[liste[j][2]]):
+            if (liste[j][1] == listeIP[i] ):
+                canvas.create_text(50+i*110,50+j*50, text=liste[j][3],font = ('Arial',10),fill='black')
+                canvas.create_line(dico[liste[j][1]],50+j*50,dico[liste[j][2]],50+j*50,fill='black',arrow=tk.LAST, width=2)
+                if(liste[j][0] == "tcp"):
+                    data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
+                    canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2,37+j*50, text= data,font = ('Arial',8),fill='black')
+                if(liste[j][0] == "http"):
+                    data = liste[j][5]
+                    canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2,37+j*50, text= data,font = ('Arial',8),fill='black')
 
-
-
-
+            #tcp destination
+            if (liste[j][2] == listeIP[i] ):
+                canvas.create_text(100+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
+        
+        if(dico[liste[j][1]] > dico[liste[j][2]]):
+            if (liste[j][1] == listeIP[i] ):
+                #creer un encadrer autour de l'element
+                canvas.create_text(100+i*110,50+j*50, text=liste[j][3],font = ('Arial',10),fill='black')
+                canvas.create_line(dico[liste[j][1]],50+j*50,dico[liste[j][2]],50+j*50,fill='black',arrow=tk.LAST, width=2)
+                if(liste[j][0] == "tcp"):
+                    data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
+                    canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2,37+j*50, text= data,font = ('Arial',8),fill='black')
+                if(liste[j][0] == "http"):
+                    data = liste[j][5]
+                    canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2,37+j*50, text= data,font = ('Arial',8),fill='black')
+            #tcp destination
+            if (liste[j][2] == listeIP[i] ):
+                canvas.create_text(50+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
 
 
 #tracer de trait verticaux partant des label vers le bas
 for i in range(len(listeIP)):
-    canvas.create_line(75+i*110,0,75+i*110,len(liste)*100,fill='white',dash=(4, 4))
+    canvas.create_line(75+i*110,40,75+i*110,len(liste)*100,fill='black',dash=(4, 4))
+
+hbar=tk.Scrollbar(frame,orient=tk.HORIZONTAL)
+hbar.pack(side=tk.BOTTOM,fill=tk.X)
+hbar.config(command=canvas.xview)
+vbar=tk.Scrollbar(frame,orient=tk.VERTICAL)
+vbar.pack(side=tk.RIGHT,fill=tk.Y)
+vbar.config(command=canvas.yview)
+canvas.config(width=1000,height=1000)
+canvas.config(xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+canvas.pack()
 
 
 
