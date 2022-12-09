@@ -149,125 +149,35 @@ def methodhttp(Trame):
         res = res + chr(convert(Trame[i][j]))
         j = j + 1
     return res
-        
+
 
 def flowgraph(Trame):
-    res = ""
+    fichier=open("res.txt","a")
     #creation du graphe
-    if (len(sys.argv)==2):
-        if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-            print("http:",ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",methodhttp(Trame))
-        if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-            print("tcp:",ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",tcpflags(Trame),":",tcpflags2(Trame),":",tcpWindow(Trame),":",tcplen(Trame),":",tcpseq(Trame),":",tcpack(Trame))
+    if(ipv4(Trame) and tcp(Trame) and http(Trame)):
+        s="http:"+ipsource(Trame)+":"+ipdestination(Trame)+":"+str(tcpsrcport(Trame))+":"+str(tcpdstport(Trame))+":"+methodhttp(Trame)+"\n"
+        fichier.write(s)
+    if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
+        d="tcp:"+ipsource(Trame)+":"+ipdestination(Trame)+":"+str(tcpsrcport(Trame))+":"+str(tcpdstport(Trame))+":"+tcpflags(Trame)+":"+tcpflags2(Trame)+":"+str(tcpWindow(Trame))+":"+str(tcplen(Trame))+":"+str(tcpseq(Trame))+":"+str(tcpack(Trame))+"\n"
+        fichier.write(d)
+    fichier.close()
 
-    if (len(sys.argv)==3):
-        if (sys.argv[2] == "tcp"):
-            if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                pass
-            if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                print(ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",methodhttp(Trame))
-
-        if (sys.argv[2] == "http"):
-            print(ipsource(Trame),":",ipdestination(Trame),":",tcpsrcport(Trame),":",tcpdstport(Trame),":",methodhttp(Trame))
-            if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                pass
-        arg = sys.argv[2].split("==")
-        arg1 = arg[0]
-        if (arg1 == "ip.addr"):
-            arg2 = arg[1]
-            if(arg2 == ipsource(Trame) or arg2 == ipdestination(Trame)):
-                if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
-                    print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
-            else:
-                pass
-        if (arg1 == "tcp.port"):
-            arg2 = int(arg[1])
-            if(arg2 == tcpsrcport(Trame) or arg2 == tcpdstport(Trame)):
-                if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
-                    print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
-            else:
-               pass
-
-        if (arg1 == "ip.source"):
-            arg2 = arg[1]
-            if(arg2 == ipsource(Trame)):
-                if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
-                    print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
-            else:
-                pass
-        if (arg1 == "ip.destination"):
-            arg2 = arg[1]
-            if(arg2 == ipdestination(Trame)):
-                if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
-                    print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
-            else:
-                pass
-        if (arg1 == "tcp.srcport"):
-            arg2 = int(arg[1])
-            if(arg2 == tcpsrcport(Trame)):
-                if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
-                    print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
-            else:
-                pass
-        if (arg1 == "tcp.dstport"):
-            arg2 = int(arg[1])
-            if(arg2 == tcpdstport(Trame)):
-                if(ipv4(Trame) and tcp(Trame) and http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("                                             ",methodhttp(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
-                    print(ipsource(Trame),"                                                                                       ",ipdestination(Trame))
-                    print("               ",tcpflags2(Trame),tcpflags(Trame), "Win =",tcpWindow(Trame),"Len =", tcplen(Trame),"Seq =",tcpseq(Trame),"Ack =",tcpack(Trame))
-                    print("   ",tcpsrcport(Trame),"------------------------------------------------------------------------------------------------->",tcpdstport(Trame),"\n")
-                if(ipv4(Trame) and not tcp(Trame) and not http(Trame)):
-                    print("IP source", ipsource(Trame), "--------> IP destination", ipdestination(Trame))
-            else:
-                pass
-     
+def res(Trame):
+    fichier = open('flow.txt','a')
+    if(ipv4(Trame) and tcp(Trame) and http(Trame)):
+        fichier.write(ipsource(Trame)+"                                                                                       "+ipdestination(Trame)+"\n")
+        fichier.write("                                             "+methodhttp(Trame)+"\n")
+        fichier.write("   "+str(tcpsrcport(Trame))+"------------------------------------------------------------------------------------------------->"+str(tcpdstport(Trame))+"\n")
+    if(ipv4(Trame) and tcp(Trame) and not http(Trame)):
+        fichier.write(ipsource(Trame)+"                                                                                       "+ipdestination(Trame)+"\n")
+        fichier.write("               "+tcpflags2(Trame)+tcpflags(Trame)+ "Win ="+str(tcpWindow(Trame))+"Len ="+ str(tcplen(Trame))+"Seq ="+str(tcpseq(Trame))+"Ack ="+str(tcpack(Trame))+"\n")
+        fichier.write("   "+str(tcpsrcport(Trame))+"------------------------------------------------------------------------------------------------->"+str(tcpdstport(Trame))+"\n")
+    fichier.close()
 
 
-
-#print(sys.argv[2])
 flowgraph(start(sys.argv[1]))
+res(start(sys.argv[1]))
+
+# flowgraph(start(sys.argv[]))
+# res(start("Trame.txt"))
 

@@ -9,7 +9,7 @@ do
 for L in $(seq 1 ${#j});
 do
 echo -n -e "$(echo $j | cut -c$L)"
-# sleep 0.02
+sleep 0.02
 done
 echo -n " "
 done
@@ -17,58 +17,73 @@ echo
 done
 }
 
-echo -e -n "\t\t\t\t\t"
+printer_slow()
+{
+for i in "$1"
+do
+for j in $i
+do
+for L in $(seq 1 ${#j});
+do
+echo -n -e "$(echo $j | cut -c$L)"
+sleep 0.05
+done
+done
+done
+}
+
+tab()
+{
+echo -n -e  "\t\t\t\t\t"
+}
+
+tab
 printer "+-----------------------------------------------+"
-echo -e -n "\t\t\t\t\t"
+tab
 printer "|Bienvenue dans le script de traitement de trame|"
-echo -e -n "\t\t\t\t\t"
-printer "+-----------------------------------------------+"
+tab
+echo "+-----------------------------------------------+"
 
 #fichier de lecture de trame
-echo -e "\n"
-printer "Voici les fichiers présents dans le répertoire :"
-echo -e "\n"
+echo
+tab
+printer " Voici les fichiers présentss dans le répertoiree :"
+echo -e -n "\n\t"
 printer "$(ls)"
-echo -e "\n"
-printer "Entrez le nom du fichier contenant les trames :"
+echo
+tab
+printer " Entrez le nom du fichier contenant les trames :"
 
 read nom
 while [ ! -f $nom ]
 do
-printer  "Fichier non trouvé    vérifiez votre saisie"
+tab
+echo "Fichier absent  vérifiez votre saisie"
 echo
-echo voici le chemin du script :
+echo "Voici le chemin du script :"
 pwd
+echo
 read nom
 done
 
 ##Fin de l'affichage 
 
 ##debut de l'exécution du script
+echo -e -n ""> res.txt
 source Cut.sh 
-printer "Le fichier résultat se trouve dans res.txt"
-
-
-printer "Voici le fichier résultat :"
-echo -e "\n"
-sleep 1
-cat res.txt
-sleep 1
-printer "Souhaitez vous appliquer un filtre ? yes/no "
-read line 
-
+tab
+printer "Le fichier résultatt se trouve dans flow.txt"
+#python3 $ig
+tab
+printer "Souhaitez vous l'ouvrir ? (yes/no) "
+read line
 while [[ $line != "yes" ]] && [[ $line != "no" ]]
 do
+tab
 printer "Veuillez entrer yes ou no"
-read line 
+read line
 done
-
-if [[ $line == "yes" ]] 
-then 
-printer "Entrez le filtre que vous voulez appliquer :" 
-read filtre
-source Cut.sh $filtre  
-cat res_filtre.txt
-printer "Le résultat filtré se trouve dans le fichier res_filtre.txt et celui sans filtre dans res.txt"
-fi
-[[ $line == "no" ]] && echo -e "Le fichier résultat se trouve dans $final"
+[[ $line == "yes" ]] && cat flow.txt
+echo 
+tab
+printer "Fin du programme !"

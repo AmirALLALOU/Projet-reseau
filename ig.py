@@ -9,7 +9,7 @@ listeIP = []
 
 
 #parcours le fichier et ajoute a la liste chaque element separes par un : sans le retour a la ligne chaque ligne est une sous liste
-with open("test.txt", "r") as f:
+with open("res.txt", "r") as f:
     for line in f:
         sousliste = line.split(":")
         sousliste[-1] = sousliste[-1].rstrip()
@@ -51,70 +51,10 @@ window = tk.Tk()
 window.title("Flow graph")
 window.geometry("1080x720")
 
-#creer un canva de len(liste)* 10000 de haut et len(listeIP)*100 de large
-canvas = tk.Canvas(window, width=len(listeIP)*75, height=len(liste)*50, bg='white',yscrollcommand= True,xscrollcommand = True,scrollregion=(0,0,len(listeIP)*150,len(liste)*52))
+#creer un canvas
+canvas = tk.Canvas(window, width=len(listeIP)*250, height=300+len(liste)*150, bg='white',yscrollcommand= True,xscrollcommand = True,scrollregion=(0,0,len(listeIP)*150,len(liste)*52))
 
-
-for i in range(len(listeProtocole)):
-    if(listeProtocole[i] == "tcp"):
-        canvas.create_rectangle(0,25+i*50,len(liste)*250,75+i*50,fill='#e4ffc7')
-    if(listeProtocole[i] == "http"):
-        canvas.create_rectangle(0,25+i*50,len(liste)*250,75+i*50,fill='#e7e6ff')
-
-#ajouter une barre de recherche en haut du canvas pour chercher un element dans la liste 
-search = tk.Entry(window, width=30)
-search.place(x=500, y=530, width=100, height=20)
-filter = tk.Label(window, width=20,text = "Appliquer votre filtre")
-filter.place(x=480, y=510, height=20)
-filter.pack()
-search.focus_set()
-search.bind("<Return>", lambda event: affichage())
-search.pack()
-#ecriture de http,tcp,ip.src,ip.dst,tcp.src,tcp.dst,ip.addr,tcp.port en bas 
-f = tk.Label(window, text="Filtre disponible : tcp, http, ip.src==x,ip.dst==x,tcp.src==x,tcp.dst==x,ip.addr==,tcp.port",font = ('Arial',12),fg='black')
-f.pack()
-
-
-#affiche les elements de la listeIP en haut sur la meme ligne a l'horizontal et trace un trait en dessous de chaque element allant vers le bas
-for i in range(len(listeIP)):
-    canvas.create_text(130+i*110,15, text=listeIP[i],font = ('Arial',10),fill='black')
-    for j in range(len(liste)):
-        #tcp source
-        if(dico[liste[j][1]] < dico[liste[j][2]]):
-            if (liste[j][1] == listeIP[i] ):
-                canvas.create_text(105+i*110,50+j*50, text=liste[j][3],font = ('Arial',10),fill='black')
-                canvas.create_line(dico[liste[j][1]]+55,50+j*50,dico[liste[j][2]]+55,50+j*50,fill='black',arrow=tk.LAST, width=2)
-                if(liste[j][0] == "tcp"):
-                    data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
-                    canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2+55,37+j*50, text= data,font = ('Arial',8),fill='black')
-                if(liste[j][0] == "http"):
-                    data = liste[j][5]
-                    canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2+55,37+j*50, text= data,font = ('Arial',8),fill='black')
-
-            #tcp destination
-            if (liste[j][2] == listeIP[i] ):
-                canvas.create_text(155+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
-        
-        if(dico[liste[j][1]] > dico[liste[j][2]]):
-            if (liste[j][1] == listeIP[i] ):
-                canvas.create_text(155+i*110,50+j*50, text=liste[j][3],font = ('Arial',10),fill='black')
-                canvas.create_line(dico[liste[j][1]]+55,50+j*50,dico[liste[j][2]]+55,50+j*50,fill='black',arrow=tk.LAST, width=2)
-                if(liste[j][0] == "tcp"):
-                    data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
-                    canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2+55,37+j*50, text= data,font = ('Arial',8),fill='black')
-                if(liste[j][0] == "http"):
-                    data = liste[j][5]
-                    canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2+55,37+j*50, text= data,font = ('Arial',8),fill='black')
-            #tcp destination
-            if (liste[j][2] == listeIP[i] ):
-                canvas.create_text(100+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
-
-
-#tracer de trait verticaux partant des label vers le bas
-for i in range(len(listeIP)):
-    canvas.create_line(130+i*110,30,130+i*110,len(liste)*55,fill='black',dash=(4, 4))
-
-
+#ajouter 2 scroll barre
 hbar=tk.Scrollbar(window,orient=tk.HORIZONTAL)
 hbar.pack(side=tk.BOTTOM,fill=tk.X)
 hbar.config(command=canvas.xview)
@@ -123,15 +63,102 @@ vbar.pack(side=tk.RIGHT,fill=tk.Y)
 vbar.config(command=canvas.yview)
 canvas.config(xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
+#ajouter un titre en haut du canvas
+titre = tk.Label(window, text="Flow graph\n",font = ('Arial',25),fg='black')
+titre.pack()
+
+for i in range(len(listeProtocole)):
+    if(listeProtocole[i] == "tcp"):
+        canvas.create_rectangle(0,25+i*50,len(liste)*250,75+i*50,fill='#e4ffc7')
+    if(listeProtocole[i] == "http"):
+        canvas.create_rectangle(0,25+i*50,len(liste)*250,75+i*50,fill='#e7e6ff')
+
+filtrePossible = ["tcp","http","ip.src","ip.dst","tcp.srcport","tcp.dstport","ip.addr","tcp.port"]
+
+#ajouter une barre de recherche en haut du canvas pour chercher un element dans la liste 
+search = tk.Entry(window, width=30)
+search.place(x=500, y=530, width=100, height=20)
+filter = tk.Label(window, width=20,text = "Appliquer votre filtre")
+filter.place(x=480, y=510, height=20)
+filter.pack()
+#si le contenu de la barre de recherche est dans la liste alors on change la couleur du fond de la barre de recherche en vert sinon en rouge
+def change():
+    if search.get() in filtrePossible:
+        search.config(bg='green')
+    else:
+        search.config(bg='red')
+        search.focus_set()
+
+
+search.focus_set()
+search.bind("<Return>", lambda event: affichage() and change())
+ 
+
+
+
+
+search.pack()
+#ecriture de http,tcp,ip.src,ip.dst,tcp.src,tcp.dst,ip.addr,tcp.port en bas 
+f = tk.Label(window, text="\nFiltre disponible : tcp , http , ip.src==x ,ip.dst==x , tcp.src==x , tcp.dst==x , ip.addr==x , tcp.port==x \n",font = ('Arial',12),fg='black')
+#ecriture des ip disponible
+"""for i in range(len(listeIP)):
+    f.config(text=f.cget("text") + listeIP[i] + " , ")
+#ecrituree des port disponible
+for i in range(len(listePortSource)):
+    f.config(text=f.cget("text") + listePortSource[i] + " , ")"""
+
+
+f.pack()
+
+
+#affiche les elements de la listeIP en haut sur la meme ligne a l'horizontal et trace un trait en dessous de chaque element allant vers le bas
+for i in range(len(listeIP)):
+    canvas.create_text(170+i*110,15, text=listeIP[i],font = ('Arial',10),fill='black')
+    for j in range(len(liste)):
+        #tcp source
+        if(dico[liste[j][1]] < dico[liste[j][2]]):
+            if (liste[j][1] == listeIP[i] ):
+                canvas.create_text(145+i*110,50+j*50, text=liste[j][3],font = ('Arial',10),fill='black')
+                canvas.create_line(dico[liste[j][1]]+95,50+j*50,dico[liste[j][2]]+95,50+j*50,fill='black',arrow=tk.LAST, width=2)
+                if(liste[j][0] == "tcp"):
+                    data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
+                    canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2+95,37+j*50, text= data,font = ('Arial',8),fill='black')
+                if(liste[j][0] == "http"):
+                    data = liste[j][5]
+                    canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2+95,37+j*50, text= data,font = ('Arial',8),fill='black')
+
+            #tcp destination
+            if (liste[j][2] == listeIP[i] ):
+                canvas.create_text(190+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
+        
+        if(dico[liste[j][1]] > dico[liste[j][2]]):
+            if (liste[j][1] == listeIP[i] ):
+                canvas.create_text(180+i*110,50+j*50,text=liste[j][3],font = ('Arial',10),fill='black')
+                canvas.create_line(dico[liste[j][1]]+95,50+j*50,dico[liste[j][2]]+95,50+j*50,fill='black',arrow=tk.LAST, width=2)
+                if(liste[j][0] == "tcp"):
+                    data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
+                    canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2+120,37+j*50, text= data,font = ('Arial',8),fill='black')
+                if(liste[j][0] == "http"):
+                    data = liste[j][5]
+                    canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2+120,37+j*50, text= data,font = ('Arial',8),fill='black')
+            #tcp destination
+            if (liste[j][2] == listeIP[i] ):
+                canvas.create_text(140+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
+
+
+#tracer de trait verticaux partant des label vers le bas
+for i in range(len(listeIP)):
+    canvas.create_line(170+i*110,30,170+i*110,len(liste)*55,fill='black',dash=(4, 4))
+
 canvas.pack()
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------
 def affichage():
     filtre = search.get()
-    win = tk.Toplevel()
-    win.title("Filtre")
-    win.geometry("500x500")
+    window = tk.Toplevel()
+    window.title("Filtre")
+    window.geometry("700x500")
 
     liste = []
     listeIP = []
@@ -143,7 +170,7 @@ def affichage():
         arg2 = filtre[1]
 
         if(arg1 == "ip.addr"):
-            with open("test.txt", "r") as fichier:
+            with open("res.txt", "r") as fichier:
                 for ligne in fichier:
                     ligne = ligne.split(":")
                     #retire les espaces avant et apres
@@ -153,7 +180,7 @@ def affichage():
                         liste.append(ligne)
 
         if(arg1 == "tcp.port"):
-            with open("test.txt", "r") as fichier:
+            with open("res.txt", "r") as fichier:
                 for ligne in fichier:
                     ligne = ligne.split(":")
                     #retire les espaces avant et apres
@@ -163,7 +190,7 @@ def affichage():
                         liste.append(ligne)
         
         if(arg1 == "ip.src"):
-            with open("test.txt", "r") as fichier:
+            with open("res.txt", "r") as fichier:
                 for ligne in fichier:
                     ligne = ligne.split(":")
                     #retire les espaces avant et apres
@@ -172,7 +199,7 @@ def affichage():
                         liste.append(ligne)
 
         if(arg1 == "ip.dst"):
-            with open("test.txt", "r") as fichier:
+            with open("res.txt", "r") as fichier:
                 for ligne in fichier:
                     ligne = ligne.split(":")
                     #retire les espaces avant et apres
@@ -181,7 +208,7 @@ def affichage():
                         liste.append(ligne)
 
         if(arg1 == "tcp.srcport"):
-            with open("test.txt", "r") as fichier:
+            with open("res.txt", "r") as fichier:
                 for ligne in fichier:
                     ligne = ligne.split(":")
                     ligne[3] = ligne[3].strip()
@@ -189,7 +216,7 @@ def affichage():
                         liste.append(ligne)
 
         if(arg1 == "tcp.dstport"):
-            with open("test.txt", "r") as fichier:
+            with open("res.txt", "r") as fichier:
                 for ligne in fichier:
                     ligne = ligne.split(":")
                     ligne[4] = ligne[4].strip()
@@ -212,7 +239,7 @@ def affichage():
 
     if(filtre == 'tcp'):
         #lis le fichier et le stock dans une liste si le 1er element est tcp
-        with open("test.txt", "r") as fichier:
+        with open("res.txt", "r") as fichier:
             for ligne in fichier:
                 ligne = ligne.split(":")
                 if (ligne[0] == "tcp"):
@@ -232,7 +259,7 @@ def affichage():
 
     if(filtre == 'http'):
         #lis le fichier et le stock dans une liste si le 1er element est http
-        with open("test.txt", "r") as fichier:
+        with open("res.txt", "r") as fichier:
             for ligne in fichier:
                 ligne = ligne.split(":")
                 if (ligne[0] == "http"):
@@ -249,60 +276,15 @@ def affichage():
         for i in range(len(liste)):
             listeProtocole.append(liste[i][0])
 
-    #creer un canva de len(liste)* 10000 de haut et len(listeIP)*100 de large
-    canvas = tk.Canvas(win, width=len(listeIP)*150, height=len(liste)*200, bg='white',yscrollcommand= True,scrollregion=(0,0,len(listeIP)*110,len(liste)*110))
-    canvas.place(x=100,y=100)
 
     dico = {}
     for i in range(len(listeIP)):
         dico[listeIP[i]] = 75+i*110
 
+    #creer un canvas
+    canvas = tk.Canvas(window, width=len(listeIP)*250, height=300+len(liste)*150, bg='white',yscrollcommand= True,xscrollcommand = True,scrollregion=(0,0,len(listeIP)*150,len(liste)*52))
 
-    for i in range(len(listeProtocole)):
-        if(listeProtocole[i] == "tcp"):
-            canvas.create_rectangle(0,25+i*50,len(liste)*200,75+i*50,fill='#e4ffc7')
-        if(listeProtocole[i] == "http"):
-            canvas.create_rectangle(0,25+i*50,len(liste)*200,75+i*50,fill='#e7e6ff')
-
-    #affiche les elements de la listeIP en haut sur la meme ligne a l'horizontal et trace un trait en dessous de chaque element allant vers le bas
-    for i in range(len(listeIP)):
-        canvas.create_text(75+i*110,15, text=listeIP[i],font = ('Arial',10),fill='black')
-        for j in range(len(liste)):
-            #tcp source
-            if(dico[liste[j][1]] < dico[liste[j][2]]):
-                if (liste[j][1] == listeIP[i] ):
-                    canvas.create_text(50+i*110,50+j*50, text=liste[j][3],font = ('Arial',10),fill='black')
-                    canvas.create_line(dico[liste[j][1]],50+j*50,dico[liste[j][2]],50+j*50,fill='black',arrow=tk.LAST, width=2)
-                    if(liste[j][0] == "tcp"):
-                        data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
-                        canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2,45+j*50, text= data,font = ('Arial',8),fill='black')
-                    if(liste[j][0] == "http"):
-                        data = liste[j][5]
-                        canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2,45+j*50, text= data,font = ('Arial',8),fill='black')
-
-                #tcp destination
-                if (liste[j][2] == listeIP[i] ):
-                    canvas.create_text(100+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
-            
-            if(dico[liste[j][1]] > dico[liste[j][2]]):
-                if (liste[j][1] == listeIP[i] ):
-                    #creer un encadrer autour de l'element
-                    canvas.create_text(100+i*110,50+j*50, text=liste[j][3],font = ('Arial',10),fill='black')
-                    canvas.create_line(dico[liste[j][1]],50+j*50,dico[liste[j][2]],50+j*50,fill='black',arrow=tk.LAST, width=2)
-                    if(liste[j][0] == "tcp"):
-                        data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
-                        canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2,37+j*50, text= data,font = ('Arial',8),fill='black')
-                    if(liste[j][0] == "http"):
-                        data = liste[j][5]
-                        canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2,45+j*50, text= data,font = ('Arial',8),fill='black')
-                #tcp destination
-                if (liste[j][2] == listeIP[i] ):
-                    canvas.create_text(50+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
-
-        #tracer de trait verticaux partant des label vers le bas
-    for i in range(len(listeIP)):
-        canvas.create_line(75+i*110,30,75+i*110,len(liste)*55,fill='black',dash=(4, 4))
-
+    #ajouter 2 scroll barre
     hbar=tk.Scrollbar(window,orient=tk.HORIZONTAL)
     hbar.pack(side=tk.BOTTOM,fill=tk.X)
     hbar.config(command=canvas.xview)
@@ -310,15 +292,58 @@ def affichage():
     vbar.pack(side=tk.RIGHT,fill=tk.Y)
     vbar.config(command=canvas.yview)
     canvas.config(xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+
+    for i in range(len(listeProtocole)):
+        if(listeProtocole[i] == "tcp"):
+            canvas.create_rectangle(0,25+i*50,200+len(liste)*250,75+i*50,fill='#e4ffc7')
+        if(listeProtocole[i] == "http"):
+            canvas.create_rectangle(0,25+i*50,200+len(liste)*250,75+i*50,fill='#e7e6ff')
+
+    #ecriture de http,tcp,ip.src,ip.dst,tcp.src,tcp.dst,ip.addr,tcp.port en bas 
+    f = tk.Label(window, text="Filtre = " + str(filtre),font = ('Arial',12),fg='black')
+    f.pack()
+
+
+    #affiche les elements de la listeIP en haut sur la meme ligne a l'horizontal et trace un trait en dessous de chaque element allant vers le bas
+    for i in range(len(listeIP)):
+        canvas.create_text(170+i*110,15, text=listeIP[i],font = ('Arial',10),fill='black')
+        for j in range(len(liste)):
+            #tcp source
+            if(dico[liste[j][1]] < dico[liste[j][2]]):
+                if (liste[j][1] == listeIP[i] ):
+                    canvas.create_text(145+i*110,50+j*50, text=liste[j][3],font = ('Arial',10),fill='black')
+                    canvas.create_line(dico[liste[j][1]]+95,50+j*50,dico[liste[j][2]]+95,50+j*50,fill='black',arrow=tk.LAST, width=2)
+                    if(liste[j][0] == "tcp"):
+                        data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
+                        canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2+95,40+j*50, text= data,font = ('Arial',8),fill='black')
+                    if(liste[j][0] == "http"):
+                        data = liste[j][5]
+                        canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2+95,40+j*50, text= data,font = ('Arial',8),fill='black')
+
+                #tcp destination
+                if (liste[j][2] == listeIP[i] ):
+                    canvas.create_text(190+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
+            
+            if(dico[liste[j][1]] > dico[liste[j][2]]):
+                if (liste[j][1] == listeIP[i] ):
+                    canvas.create_text(180+i*110,50+j*50,text=liste[j][3],font = ('Arial',10),fill='black')
+                    canvas.create_line(dico[liste[j][1]]+95,50+j*50,dico[liste[j][2]]+95,50+j*50,fill='black',arrow=tk.LAST, width=2)
+                    if(liste[j][0] == "tcp"):
+                        data = liste[j][3]+"->"+liste[j][4]+liste[j][5]+liste[j][6]+"Win ="+liste[j][7]+"Len ="+liste[j][8]+"Seq ="+liste[j][9]+"Ack ="+liste[j][10]
+                        canvas.create_text((dico[liste[j][2]]+dico[liste[j][1]])/2+120,40+j*50, text= data,font = ('Arial',8),fill='black')
+                    if(liste[j][0] == "http"):
+                        data = liste[j][5]
+                        canvas.create_text((dico[liste[j][1]]+dico[liste[j][2]])/2+120,40+j*50, text= data,font = ('Arial',8),fill='black')
+                #tcp destination
+                if (liste[j][2] == listeIP[i] ):
+                    canvas.create_text(140+i*110,50+j*50, text=liste[j][4],font = ('Arial',10),fill='black')
+
+
+    #tracer de trait verticaux partant des label vers le bas
+    for i in range(len(listeIP)):
+        canvas.create_line(170+i*110,30,170+i*110,len(liste)*55,fill='black',dash=(4, 4))
+
     canvas.pack()
-
 #----------------------------------------------------------------------------------------------------------------------------------
-
-    
-
-
-
-
-
 
 window.mainloop()
